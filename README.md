@@ -6,9 +6,9 @@
 
 前往 [GitHub Releases](https://github.com/pyd966/TiaoKe/releases/latest) 下载最新版本：
 
-- `TiaoKe-v0.1.0-win-x64.exe`：单文件便携版，双击即可运行。
-- `TiaoKe-v0.1.0-win-x64.zip`：压缩包版本，解压后运行 `TiaoKe.exe`。
-- `TiaoKe-v0.1.0-SHA256.txt`：下载文件的 SHA-256 校验值。
+- `TiaoKe-v0.1.1-win-x64.exe`：单文件便携版，双击即可运行。
+- `TiaoKe-v0.1.1-win-x64.zip`：压缩包版本，解压后运行 `TiaoKe.exe`。
+- `TiaoKe-v0.1.1-SHA256.txt`：下载文件的 SHA-256 校验值。
 
 程序支持 Windows 10 22H2 及以上版本和 Windows 11（x64），已包含 .NET 8 运行时，不需要另行安装依赖。当前版本未进行商业代码签名，Windows 首次运行时可能显示 SmartScreen 提示。
 
@@ -57,7 +57,7 @@ $env:APPDATA="$PWD\.appdata"
 生成完整发布包：
 
 ```powershell
-.\tools\package-release.ps1 -Version 0.1.0
+.\tools\package-release.ps1 -Version 0.1.1
 ```
 
-产物会写入 `artifacts/release/v0.1.0`。
+产物会写入 `artifacts/release/v0.1.1`。
