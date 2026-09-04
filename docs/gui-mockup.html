@@ -74,6 +74,8 @@
       background: light-dark(#2f765e, #70b99b);
       border: 1px solid transparent;
       color: light-dark(#ffffff, #13231c);
+      min-width: 112px;
+      white-space: nowrap;
     }
     #tiaoke-mockup .tiaoke-secondary {
       background: transparent;
@@ -167,7 +169,6 @@
           <button class="tiaoke-icon-button" type="button" aria-label="更多操作" data-tooltip="更多操作"><i data-lucide="ellipsis" aria-hidden="true"></i></button>
         </div>
         <div class="tiaoke-reminder-foot">
-          <p class="tiaoke-hint">提醒会留在这里，不会打断你</p>
           <button class="tiaoke-primary" type="button"><i data-lucide="eye" aria-hidden="true"></i>开始远眺</button>
         </div>
       </div>
@@ -207,6 +208,10 @@
           <div class="tiaoke-setting-row">
             <div><div>休息时长</div><p class="tiaoke-hint">完成后自动开始新一轮</p></div>
             <div class="tiaoke-stepper"><span class="tiaoke-stepper-value">20</span><span>秒</span></div>
+          </div>
+          <div class="tiaoke-setting-row">
+            <div><div>提醒模式</div><p class="tiaoke-hint">可按你的工作节奏切换</p></div>
+            <div class="tiaoke-stepper"><span class="tiaoke-stepper-value">标准</span></div>
           </div>
         </div>
         <div class="tiaoke-settings-foot">
