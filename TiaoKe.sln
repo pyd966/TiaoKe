@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{60DC8134-BAE1-4D2D-BD68-CC9A0A0A0E1C}") = "TiaoKe.App", "src\TiaoKe.App\TiaoKe.App.csproj", "{7E6B81B8-8F1D-4DF8-9C2D-3B2C5C9359A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiaoKe.Tests", "tests\TiaoKe.Tests\TiaoKe.Tests.csproj", "{3D7B2E90-2E6F-46A4-9B4F-78A3F5BB8B3E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E6B81B8-8F1D-4DF8-9C2D-3B2C5C9359A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E6B81B8-8F1D-4DF8-9C2D-3B2C5C9359A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E6B81B8-8F1D-4DF8-9C2D-3B2C5C9359A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E6B81B8-8F1D-4DF8-9C2D-3B2C5C9359A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D7B2E90-2E6F-46A4-9B4F-78A3F5BB8B3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D7B2E90-2E6F-46A4-9B4F-78A3F5BB8B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D7B2E90-2E6F-46A4-9B4F-78A3F5BB8B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D7B2E90-2E6F-46A4-9B4F-78A3F5BB8B3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

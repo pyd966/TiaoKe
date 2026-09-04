@@ -1,0 +1,23 @@
+<Application x:Class="TiaoKe.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <SolidColorBrush x:Key="PageBackgroundBrush" Color="#F6F7F5" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="TextBrush" Color="#202522" />
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#68716C" />
+        <SolidColorBrush x:Key="BrandBrush" Color="#2F765E" />
+        <SolidColorBrush x:Key="WarningBrush" Color="#D99A20" />
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="12,7" />
+            <Setter Property="MinHeight" Value="36" />
+        </Style>
+    </Application.Resources>
+</Application>

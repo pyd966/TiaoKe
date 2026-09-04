@@ -23,5 +23,14 @@
 
 ## 当前状态
 
-项目处于方案阶段。仓库已初始化，下一步是建立 WPF 工程骨架并完成计时状态机的测试。
+首个可运行版本已建立：包含托盘常驻、持续提醒、休息倒计时、立即休息、暂停休息提醒、设置持久化、开机启动开关和单实例唤起。核心状态测试位于 `tests/TiaoKe.Tests`。
 
+项目内安装了隔离的 .NET 8 SDK，可直接运行：
+
+```powershell
+$env:DOTNET_CLI_HOME="$PWD\.dotnet-home"
+$env:NUGET_PACKAGES="$PWD\.nuget\packages"
+$env:APPDATA="$PWD\.appdata"
+.\.dotnet\dotnet.exe build .\TiaoKe.sln
+.\.dotnet\dotnet.exe run --project .\tests\TiaoKe.Tests\TiaoKe.Tests.csproj
+```

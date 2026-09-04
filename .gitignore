@@ -3,6 +3,10 @@ bin/
 obj/
 artifacts/
 publish/
+.dotnet/
+.dotnet-home/
+.nuget/
+.appdata/
 
 # IDE state
 .vs/
@@ -17,4 +21,3 @@ coverage/
 # Local runtime data
 *.log
 settings.local.json
-
