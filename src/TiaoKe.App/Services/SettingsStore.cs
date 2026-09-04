@@ -30,7 +30,7 @@ public sealed class SettingsStore
         {
             if (!File.Exists(_settingsPath)) return new AppSettings();
             var json = File.ReadAllText(_settingsPath);
-            return Validate(JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings());
+            return Validate(JsonSerializer.Deserialize<AppSettings>(json, SerializerOptions) ?? new AppSettings());
         }
         catch (IOException)
         {
@@ -66,6 +66,8 @@ public sealed class SettingsStore
         settings.ReminderCorner = settings.ReminderCorner is "topLeft" or "topRight" or "bottomRight"
             ? settings.ReminderCorner
             : "bottomLeft";
+        settings.DisplayTarget = settings.DisplayTarget == "primary" ? "primary" : "active";
+        settings.SchemaVersion = 2;
         return settings;
     }
 }

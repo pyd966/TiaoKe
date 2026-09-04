@@ -7,102 +7,499 @@
         MinWidth="620"
         MinHeight="460"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource PageBackgroundBrush}">
-    <Grid>
+        Icon="/Assets/tiaoke.ico"
+        KeyDown="Window_KeyDown">
+    <Window.Resources>
+        <Style x:Key="SettingsTabItemStyle" TargetType="TabItem">
+            <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="12,10,12,9" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="0,0,0,2">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource HoverBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource BrandBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource BrandBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+
+        <Style x:Key="HintTextStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,4,0,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource PageBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Padding="24,20,24,14" Background="{StaticResource PageBackgroundBrush}">
+        <Border Padding="24,17,24,10">
             <StackPanel>
                 <TextBlock FontSize="20" FontWeight="Medium" Text="眺刻设置" />
-                <TextBlock Margin="0,6,0,0"
-                           FontSize="13"
-                           Foreground="{StaticResource MutedTextBrush}"
+                <TextBlock Margin="0,5,0,0"
+                           FontSize="12"
+                           Foreground="{DynamicResource MutedTextBrush}"
                            Text="调整工作与远眺节奏" />
             </StackPanel>
         </Border>
 
-        <Border Grid.Row="1"
-                Margin="24,0"
-                Padding="24"
-                Background="{StaticResource SurfaceBrush}"
-                BorderBrush="#DFE4E1"
-                BorderThickness="1"
-                CornerRadius="8">
-            <StackPanel>
-                <TextBlock FontSize="16" FontWeight="Medium" Text="工作与休息" />
+        <TabControl Grid.Row="1"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderThickness="0">
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Background="{DynamicResource PageBackgroundBrush}">
+                            <TabPanel x:Name="HeaderPanel"
+                                      Margin="24,0,0,0"
+                                      IsItemsHost="True"
+                                      KeyboardNavigation.TabIndex="1"
+                                      Panel.ZIndex="1" />
+                        </Border>
+                        <Border Grid.Row="1"
+                                Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="0,1,0,0">
+                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                                              ContentSource="SelectedContent"
+                                              KeyboardNavigation.TabIndex="2" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </TabControl.Template>
 
-                <Grid Margin="0,22,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="160" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="工作时长" />
-                        <TextBlock Margin="0,4,0,0" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Text="到点后提醒会保持显示" />
+            <TabItem Header="定时" Style="{StaticResource SettingsTabItemStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="24,18,24,22">
+                        <TextBlock Style="{StaticResource SectionTitleStyle}" Text="工作与休息" />
+
+                        <Border Margin="0,10,0,0"
+                                Padding="0,11"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="工作时长" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="到点后保持提醒，直到你主动开始" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal">
+                                    <TextBox x:Name="WorkMinutesTextBox"
+                                             Width="78"
+                                             HorizontalContentAlignment="Right"
+                                             TextChanged="DurationTextBox_TextChanged" />
+                                    <TextBlock Margin="9,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource MutedTextBrush}"
+                                               Text="分钟" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="0,11"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="休息时长" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="完成后自动开始新一轮" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal">
+                                    <TextBox x:Name="RestSecondsTextBox"
+                                             Width="78"
+                                             HorizontalContentAlignment="Right"
+                                             TextChanged="DurationTextBox_TextChanged" />
+                                    <TextBlock Margin="9,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource MutedTextBrush}"
+                                               Text="秒" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <TextBlock Margin="0,16,0,0" FontWeight="Medium" Text="快捷设置" />
+                        <TextBlock Style="{StaticResource HintTextStyle}" Text="选择后会同步更新工作和休息时长" />
+                        <UniformGrid Margin="0,10,0,0" Columns="4">
+                            <RadioButton x:Name="StandardPresetRadio"
+                                         Margin="0,0,6,0"
+                                         GroupName="SchedulePreset"
+                                         Style="{StaticResource SegmentRadioStyle}"
+                                         Checked="Preset_Checked">
+                                <StackPanel>
+                                    <TextBlock HorizontalAlignment="Center" Text="标准" />
+                                    <TextBlock Margin="0,2,0,0"
+                                               HorizontalAlignment="Center"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource MutedTextBrush}"
+                                               Text="20 / 20" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton x:Name="FrequentPresetRadio"
+                                         Margin="2,0,4,0"
+                                         GroupName="SchedulePreset"
+                                         Style="{StaticResource SegmentRadioStyle}"
+                                         Checked="Preset_Checked">
+                                <StackPanel>
+                                    <TextBlock HorizontalAlignment="Center" Text="频繁" />
+                                    <TextBlock Margin="0,2,0,0"
+                                               HorizontalAlignment="Center"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource MutedTextBrush}"
+                                               Text="10 / 20" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton x:Name="ActivePresetRadio"
+                                         Margin="4,0,2,0"
+                                         GroupName="SchedulePreset"
+                                         Style="{StaticResource SegmentRadioStyle}"
+                                         Checked="Preset_Checked">
+                                <StackPanel>
+                                    <TextBlock HorizontalAlignment="Center" Text="主动" />
+                                    <TextBlock Margin="0,2,0,0"
+                                               HorizontalAlignment="Center"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource MutedTextBrush}"
+                                               Text="30 / 120" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton x:Name="ManualPresetRadio"
+                                         Margin="6,0,0,0"
+                                         GroupName="SchedulePreset"
+                                         Style="{StaticResource SegmentRadioStyle}"
+                                         Checked="Preset_Checked"
+                                         Content="自定义" />
+                        </UniformGrid>
+
+                        <Border Margin="0,16,0,0"
+                                Padding="0,13,0,0"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,1,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="现在需要离开屏幕？" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="不用等待当前工作计时结束" />
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        MinWidth="100"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Click="RestNow_Click"
+                                        Content="立即休息" />
+                            </Grid>
+                        </Border>
                     </StackPanel>
-                    <DockPanel Grid.Column="1">
-                        <TextBlock DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center" Text="分钟" />
-                        <TextBox x:Name="WorkMinutesTextBox" Padding="8" VerticalContentAlignment="Center" />
-                    </DockPanel>
-                </Grid>
+                </ScrollViewer>
+            </TabItem>
 
-                <Separator Margin="0,16" Background="#EDF0EE" />
+            <TabItem Header="行为" Style="{StaticResource SettingsTabItemStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="24,18,24,22">
+                        <TextBlock Style="{StaticResource SectionTitleStyle}" Text="启动与提醒" />
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="160" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="休息时长" />
-                        <TextBlock Margin="0,4,0,0" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Text="休息结束后开始新一轮" />
+                        <Border Margin="0,10,0,0"
+                                Padding="0,13"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="登录 Windows 后自动启动" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="在后台安静运行，不主动打开设置窗口" />
+                                </StackPanel>
+                                <ToggleButton x:Name="LaunchAtLoginToggle"
+                                              Grid.Column="1"
+                                              VerticalAlignment="Center"
+                                              Style="{StaticResource SwitchToggleStyle}" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="0,13"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="提醒时播放轻提示音" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="默认关闭；每轮只播放一次" />
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Margin="0,0,10,0"
+                                        Style="{StaticResource GhostButtonStyle}"
+                                        Click="SoundPreview_Click"
+                                        Content="试听" />
+                                <ToggleButton x:Name="SoundEnabledToggle"
+                                              Grid.Column="2"
+                                              VerticalAlignment="Center"
+                                              Style="{StaticResource SwitchToggleStyle}" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="0,13"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="提醒位置" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="与工作区边缘保持 16 像素" />
+                                </StackPanel>
+                                <UniformGrid Grid.Column="1" Width="208" Columns="2" Rows="2">
+                                    <RadioButton x:Name="TopLeftCornerRadio"
+                                                 Margin="0,0,4,4"
+                                                 GroupName="ReminderCorner"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Content="左上" />
+                                    <RadioButton x:Name="TopRightCornerRadio"
+                                                 Margin="4,0,0,4"
+                                                 GroupName="ReminderCorner"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Content="右上" />
+                                    <RadioButton x:Name="BottomLeftCornerRadio"
+                                                 Margin="0,4,4,0"
+                                                 GroupName="ReminderCorner"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Content="左下" />
+                                    <RadioButton x:Name="BottomRightCornerRadio"
+                                                 Margin="4,4,0,0"
+                                                 GroupName="ReminderCorner"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Content="右下" />
+                                </UniformGrid>
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="0,13">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="在哪块屏幕显示" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="多显示器环境下决定提醒出现的位置" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <RadioButton x:Name="ActiveDisplayRadio"
+                                                 Margin="0,0,4,0"
+                                                 GroupName="DisplayTarget"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Content="当前屏幕" />
+                                    <RadioButton x:Name="PrimaryDisplayRadio"
+                                                 Margin="4,0,0,0"
+                                                 GroupName="DisplayTarget"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Content="主屏幕" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
                     </StackPanel>
-                    <DockPanel Grid.Column="1">
-                        <TextBlock DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center" Text="秒" />
-                        <TextBox x:Name="RestSecondsTextBox" Padding="8" VerticalContentAlignment="Center" />
-                    </DockPanel>
-                </Grid>
+                </ScrollViewer>
+            </TabItem>
 
-                <Separator Margin="0,16" Background="#EDF0EE" />
+            <TabItem Header="外观" Style="{StaticResource SettingsTabItemStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="24,18,24,22">
+                        <TextBlock Style="{StaticResource SectionTitleStyle}" Text="主题与提醒卡片" />
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="现在需要离开屏幕？" />
-                        <TextBlock Margin="0,4,0,0" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Text="不用等待当前工作计时结束" />
+                        <Border Margin="0,10,0,0"
+                                Padding="0,13"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="主题" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="选择时可直接预览，保存后生效" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <RadioButton x:Name="SystemThemeRadio"
+                                                 Margin="0,0,4,0"
+                                                 GroupName="Theme"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Checked="Theme_Checked"
+                                                 Content="跟随系统" />
+                                    <RadioButton x:Name="LightThemeRadio"
+                                                 Margin="4,0"
+                                                 GroupName="Theme"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Checked="Theme_Checked"
+                                                 Content="浅色" />
+                                    <RadioButton x:Name="DarkThemeRadio"
+                                                 Margin="4,0,0,0"
+                                                 GroupName="Theme"
+                                                 Style="{StaticResource SegmentRadioStyle}"
+                                                 Checked="Theme_Checked"
+                                                 Content="深色" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="0,13"
+                                BorderBrush="{DynamicResource DividerBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="紧凑提醒" />
+                                    <TextBlock Style="{StaticResource HintTextStyle}" Text="隐藏说明行，只保留标题和主要操作" />
+                                </StackPanel>
+                                <ToggleButton x:Name="CompactReminderToggle"
+                                              Grid.Column="1"
+                                              VerticalAlignment="Center"
+                                              Style="{StaticResource SwitchToggleStyle}"
+                                              Checked="CompactReminder_CheckedChanged"
+                                              Unchecked="CompactReminder_CheckedChanged" />
+                            </Grid>
+                        </Border>
+
+                        <TextBlock Margin="0,15,0,9"
+                                   FontWeight="Medium"
+                                   Text="提醒预览" />
+                        <Border x:Name="ReminderPreview"
+                                Width="360"
+                                Height="148"
+                                HorizontalAlignment="Left"
+                                Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                            <Grid ClipToBounds="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Background="{DynamicResource WarningBrush}" />
+                                <Grid Grid.Column="1" Margin="18,14,16,14">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel>
+                                        <TextBlock FontSize="18" FontWeight="Medium" Text="该看看远处了" />
+                                        <TextBlock x:Name="PreviewDetailsText"
+                                                   Margin="0,5,0,0"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource MutedTextBrush}"
+                                                   Text="这一轮已经专注 20 分钟" />
+                                    </StackPanel>
+                                    <Button Grid.Row="1"
+                                            Width="112"
+                                            Margin="0,10,0,0"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            IsHitTestVisible="False"
+                                            Style="{StaticResource PrimaryButtonStyle}">
+                                        <TextBlock Foreground="{DynamicResource BrandForegroundBrush}"
+                                                   Text="开始远眺"
+                                                   TextWrapping="NoWrap" />
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Border>
                     </StackPanel>
-                    <Button Grid.Column="1" MinWidth="100" Click="RestNow_Click" Content="立即休息" />
-                </Grid>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
 
-                <Separator Margin="0,16" Background="#EDF0EE" />
-
-                <CheckBox x:Name="LaunchAtLoginCheckBox"
-                          VerticalContentAlignment="Center"
-                          Content="登录 Windows 后自动启动" />
-
+        <Border Grid.Row="2"
+                Padding="24,12"
+                Background="{DynamicResource PageBackgroundBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <TextBlock x:Name="ValidationText"
-                           Margin="0,18,0,0"
-                           Foreground="#B7473E"
+                           Margin="0,0,16,0"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DangerBrush}"
                            Visibility="Collapsed" />
-            </StackPanel>
-        </Border>
-
-        <Border Grid.Row="2" Padding="24,14" BorderBrush="#DFE4E1" BorderThickness="0,1,0,0">
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button Margin="0,0,8,0" Click="Cancel_Click" Content="取消" />
-                <Button MinWidth="100"
-                        Background="{StaticResource BrandBrush}"
-                        Foreground="White"
-                        Click="Save_Click"
-                        Content="保存更改" />
-            </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Margin="0,0,8,0"
+                            MinWidth="92"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Click="RestoreDefaults_Click"
+                            Content="恢复默认" />
+                    <Button MinWidth="108"
+                            IsDefault="True"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="Save_Click">
+                        <TextBlock Foreground="{DynamicResource BrandForegroundBrush}"
+                                   Text="保存更改"
+                                   TextWrapping="NoWrap" />
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </Window>

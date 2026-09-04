@@ -1,11 +1,14 @@
 using TiaoKe.App.Core;
+using TiaoKe.App.Models;
+using TiaoKe.App.Services;
 
 var tests = new (string Name, Action Run)[]
 {
     ("work timer reaches reminder once", WorkTimerReachesReminder),
     ("rest can start immediately", RestCanStartImmediately),
     ("reminder pause starts a fresh cycle when resumed", ReminderPauseStartsFreshCycle),
-    ("rest can start while reminders are paused", RestCanStartWhileRemindersArePaused)
+    ("rest can start while reminders are paused", RestCanStartWhileRemindersArePaused),
+    ("behavior and appearance settings persist", BehaviorAndAppearanceSettingsPersist)
 };
 
 var failures = 0;
@@ -66,6 +69,34 @@ static void RestCanStartWhileRemindersArePaused()
     timer.StartRestNow();
     Equal(TimerState.Resting, timer.State);
     Equal(TimeSpan.FromSeconds(20), timer.Snapshot.Remaining);
+}
+
+static void BehaviorAndAppearanceSettingsPersist()
+{
+    var path = Path.Combine(Path.GetTempPath(), $"tiaoke-settings-{Guid.NewGuid():N}.json");
+    try
+    {
+        var store = new SettingsStore(path);
+        store.Save(new AppSettings
+        {
+            ReminderCorner = "topRight",
+            DisplayTarget = "primary",
+            SoundEnabled = true,
+            Theme = "dark",
+            CompactReminder = true
+        });
+
+        var loaded = store.Load();
+        Equal("topRight", loaded.ReminderCorner);
+        Equal("primary", loaded.DisplayTarget);
+        Equal(true, loaded.SoundEnabled);
+        Equal("dark", loaded.Theme);
+        Equal(true, loaded.CompactReminder);
+    }
+    finally
+    {
+        File.Delete(path);
+    }
 }
 
 static BreakTimer CreateTimer(FakeClock clock) =>

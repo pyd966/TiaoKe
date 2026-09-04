@@ -10,6 +10,13 @@
     <AssemblyName>TiaoKe</AssemblyName>
     <RootNamespace>TiaoKe.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\tiaoke.ico</ApplicationIcon>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Assets\tiaoke-icon.png" />
+    <None Remove="Assets\tiaoke.ico" />
+    <Resource Include="Assets\tiaoke-icon.png" />
+    <Resource Include="Assets\tiaoke.ico" />
+  </ItemGroup>
 </Project>

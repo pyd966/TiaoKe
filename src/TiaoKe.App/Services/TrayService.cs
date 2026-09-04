@@ -6,6 +6,7 @@ namespace TiaoKe.App.Services;
 
 public sealed class TrayService : IDisposable
 {
+    private readonly Icon _applicationIcon;
     private readonly NotifyIcon _notifyIcon;
     private readonly ToolStripMenuItem _statusItem;
     private readonly ToolStripMenuItem _restNowItem;
@@ -20,6 +21,7 @@ public sealed class TrayService : IDisposable
         Action exit)
     {
         _snapshot = initialSnapshot;
+        _applicationIcon = LoadApplicationIcon();
         _statusItem = new ToolStripMenuItem { Enabled = false };
         _restNowItem = new ToolStripMenuItem("立即休息", null, (_, _) => startRestNow());
 
@@ -48,7 +50,7 @@ public sealed class TrayService : IDisposable
         _notifyIcon = new NotifyIcon
         {
             Text = "眺刻",
-            Icon = SystemIcons.Information,
+            Icon = _applicationIcon,
             ContextMenuStrip = menu,
             Visible = true
         };
@@ -91,5 +93,18 @@ public sealed class TrayService : IDisposable
     {
         _notifyIcon.Visible = false;
         _notifyIcon.Dispose();
+        _applicationIcon.Dispose();
+    }
+
+    private static Icon LoadApplicationIcon()
+    {
+        var executablePath = Environment.ProcessPath;
+        if (!string.IsNullOrWhiteSpace(executablePath))
+        {
+            var icon = Icon.ExtractAssociatedIcon(executablePath);
+            if (icon is not null) return icon;
+        }
+
+        return (Icon)SystemIcons.Application.Clone();
     }
 }
