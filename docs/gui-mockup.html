@@ -1,0 +1,219 @@
+<div id="tiaoke-mockup" aria-label="眺刻关键界面设计预览">
+  <style>
+    #tiaoke-mockup {
+      color-scheme: light dark;
+      color: light-dark(#202522, #f1f4f2);
+      font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+      font-size: var(--font-size-base);
+      letter-spacing: 0;
+      width: 100%;
+    }
+    #tiaoke-mockup * { box-sizing: border-box; }
+    #tiaoke-mockup .tiaoke-showcase {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    #tiaoke-mockup .tiaoke-label {
+      color: light-dark(#68716c, #aab3ae);
+      margin: 0 0 8px;
+      font-weight: 500;
+    }
+    #tiaoke-mockup .tiaoke-reminder {
+      background: light-dark(#ffffff, #222624);
+      border: 1px solid light-dark(#dfe4e1, #343a36);
+      border-radius: 8px;
+      box-shadow: 0 12px 28px light-dark(rgba(20, 30, 24, 0.12), rgba(0, 0, 0, 0.32));
+      min-height: 148px;
+      overflow: hidden;
+      position: relative;
+      padding: 18px 18px 16px 22px;
+    }
+    #tiaoke-mockup .tiaoke-reminder::before {
+      background: light-dark(#d99a20, #e9b84a);
+      content: "";
+      inset: 0 auto 0 0;
+      position: absolute;
+      width: 3px;
+    }
+    #tiaoke-mockup .tiaoke-reminder-head,
+    #tiaoke-mockup .tiaoke-reminder-foot,
+    #tiaoke-mockup .tiaoke-count-row,
+    #tiaoke-mockup .tiaoke-settings-head,
+    #tiaoke-mockup .tiaoke-setting-row,
+    #tiaoke-mockup .tiaoke-settings-foot {
+      align-items: center;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+    #tiaoke-mockup .tiaoke-title { font-weight: 500; margin: 0 0 5px; }
+    #tiaoke-mockup .tiaoke-subtitle,
+    #tiaoke-mockup .tiaoke-hint { color: light-dark(#68716c, #aab3ae); margin: 0; }
+    #tiaoke-mockup .tiaoke-reminder-foot { margin-top: 22px; }
+    #tiaoke-mockup button {
+      align-items: center;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      font: inherit;
+      font-weight: 500;
+      gap: 7px;
+      justify-content: center;
+      min-height: 36px;
+      padding: 7px 12px;
+    }
+    #tiaoke-mockup .tiaoke-icon-button {
+      background: transparent;
+      border: 0;
+      color: light-dark(#68716c, #aab3ae);
+      min-width: 36px;
+      padding: 7px;
+    }
+    #tiaoke-mockup .tiaoke-primary {
+      background: light-dark(#2f765e, #70b99b);
+      border: 1px solid transparent;
+      color: light-dark(#ffffff, #13231c);
+    }
+    #tiaoke-mockup .tiaoke-secondary {
+      background: transparent;
+      border: 1px solid light-dark(#cbd2ce, #465049);
+      color: inherit;
+    }
+    #tiaoke-mockup .tiaoke-time { font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+    #tiaoke-mockup .tiaoke-progress {
+      background: light-dark(#e6ebe8, #38403b);
+      border-radius: 3px;
+      flex: 1;
+      height: 6px;
+      overflow: hidden;
+    }
+    #tiaoke-mockup .tiaoke-progress > span {
+      background: light-dark(#2f765e, #70b99b);
+      display: block;
+      height: 100%;
+      width: 64%;
+    }
+    #tiaoke-mockup .tiaoke-count-row { margin-top: 18px; }
+    #tiaoke-mockup .tiaoke-settings-wrap { grid-column: 1 / -1; }
+    #tiaoke-mockup .tiaoke-settings {
+      background: light-dark(#f6f7f5, #171a18);
+      border: 1px solid light-dark(#d7ddda, #343a36);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    #tiaoke-mockup .tiaoke-settings-head { padding: 16px 20px 0; }
+    #tiaoke-mockup .tiaoke-settings-title { font-weight: 500; margin: 0; }
+    #tiaoke-mockup .tiaoke-tabs {
+      border-bottom: 1px solid light-dark(#d7ddda, #343a36);
+      display: flex;
+      gap: 4px;
+      padding: 10px 20px 0;
+    }
+    #tiaoke-mockup .tiaoke-tab {
+      background: transparent;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      color: light-dark(#68716c, #aab3ae);
+      padding-inline: 10px;
+    }
+    #tiaoke-mockup .tiaoke-tab[aria-selected="true"] {
+      border-bottom-color: light-dark(#2f765e, #70b99b);
+      color: inherit;
+    }
+    #tiaoke-mockup .tiaoke-settings-content { background: light-dark(#ffffff, #222624); padding: 20px; }
+    #tiaoke-mockup .tiaoke-section-title { font-weight: 500; margin: 0 0 14px; }
+    #tiaoke-mockup .tiaoke-setting-row { border-bottom: 1px solid light-dark(#edf0ee, #303632); padding: 12px 0; }
+    #tiaoke-mockup .tiaoke-setting-row:last-child { border-bottom: 0; }
+    #tiaoke-mockup .tiaoke-stepper {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+    }
+    #tiaoke-mockup .tiaoke-stepper-value {
+      background: light-dark(#ffffff, #222624);
+      border: 1px solid light-dark(#cbd2ce, #465049);
+      border-radius: 6px;
+      min-width: 72px;
+      padding: 8px 10px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    #tiaoke-mockup .tiaoke-settings-foot {
+      border-top: 1px solid light-dark(#d7ddda, #343a36);
+      justify-content: flex-end;
+      padding: 12px 20px;
+    }
+    #tiaoke-mockup i { height: 16px; width: 16px; }
+    @media (max-width: 600px) {
+      #tiaoke-mockup .tiaoke-showcase { grid-template-columns: minmax(0, 1fr); }
+      #tiaoke-mockup .tiaoke-settings-wrap { grid-column: auto; }
+      #tiaoke-mockup .tiaoke-reminder-foot,
+      #tiaoke-mockup .tiaoke-setting-row { align-items: stretch; flex-direction: column; }
+      #tiaoke-mockup .tiaoke-reminder-foot button { align-self: flex-end; }
+      #tiaoke-mockup .tiaoke-stepper { align-self: flex-end; }
+    }
+  </style>
+  <div class="tiaoke-showcase">
+    <section aria-labelledby="tiaoke-reminder-label">
+      <p class="tiaoke-label" id="tiaoke-reminder-label">到点提醒</p>
+      <div class="tiaoke-reminder">
+        <div class="tiaoke-reminder-head">
+          <div>
+            <p class="tiaoke-title">该看看远处了</p>
+            <p class="tiaoke-subtitle">这一轮已经专注 20 分钟</p>
+          </div>
+          <button class="tiaoke-icon-button" type="button" aria-label="更多操作" data-tooltip="更多操作"><i data-lucide="ellipsis" aria-hidden="true"></i></button>
+        </div>
+        <div class="tiaoke-reminder-foot">
+          <p class="tiaoke-hint">提醒会留在这里，不会打断你</p>
+          <button class="tiaoke-primary" type="button"><i data-lucide="eye" aria-hidden="true"></i>开始远眺</button>
+        </div>
+      </div>
+    </section>
+    <section aria-labelledby="tiaoke-rest-label">
+      <p class="tiaoke-label" id="tiaoke-rest-label">休息倒计时</p>
+      <div class="tiaoke-reminder">
+        <div>
+          <p class="tiaoke-title">看向 6 米以外</p>
+          <p class="tiaoke-subtitle">放松眼睛，慢慢眨眼</p>
+        </div>
+        <div class="tiaoke-count-row">
+          <span class="tiaoke-time">00:13</span>
+          <div class="tiaoke-progress" role="progressbar" aria-label="休息剩余时间" aria-valuenow="13" aria-valuemin="0" aria-valuemax="20"><span></span></div>
+          <button class="tiaoke-secondary" type="button">提前结束</button>
+        </div>
+      </div>
+    </section>
+    <section class="tiaoke-settings-wrap" aria-labelledby="tiaoke-settings-label">
+      <p class="tiaoke-label" id="tiaoke-settings-label">设置窗口</p>
+      <div class="tiaoke-settings">
+        <div class="tiaoke-settings-head">
+          <p class="tiaoke-settings-title">眺刻设置</p>
+          <button class="tiaoke-icon-button" type="button" aria-label="关闭设置" data-tooltip="关闭"><i data-lucide="x" aria-hidden="true"></i></button>
+        </div>
+        <div class="tiaoke-tabs" role="tablist" aria-label="设置类别">
+          <button class="tiaoke-tab" type="button" role="tab" aria-selected="true">定时</button>
+          <button class="tiaoke-tab" type="button" role="tab" aria-selected="false">行为</button>
+          <button class="tiaoke-tab" type="button" role="tab" aria-selected="false">外观</button>
+        </div>
+        <div class="tiaoke-settings-content">
+          <p class="tiaoke-section-title">工作与休息</p>
+          <div class="tiaoke-setting-row">
+            <div><div>工作时长</div><p class="tiaoke-hint">到点后保持提醒，直到你主动开始</p></div>
+            <div class="tiaoke-stepper"><span class="tiaoke-stepper-value">20</span><span>分钟</span></div>
+          </div>
+          <div class="tiaoke-setting-row">
+            <div><div>休息时长</div><p class="tiaoke-hint">完成后自动开始新一轮</p></div>
+            <div class="tiaoke-stepper"><span class="tiaoke-stepper-value">20</span><span>秒</span></div>
+          </div>
+        </div>
+        <div class="tiaoke-settings-foot">
+          <button class="tiaoke-secondary" type="button">恢复默认</button>
+          <button class="tiaoke-primary" type="button"><i data-lucide="save" aria-hidden="true"></i>保存更改</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
