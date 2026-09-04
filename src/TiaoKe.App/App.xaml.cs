@@ -1,4 +1,3 @@
-using System.Media;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
@@ -27,6 +26,7 @@ public partial class App : System.Windows.Application
     private ReminderWindow? _reminderWindow;
     private SettingsWindow? _settingsWindow;
     private TrayService? _trayService;
+    private NotificationSound? _notificationSound;
     private DispatcherTimer? _dispatcherTimer;
     private TimerState _lastTimerState = TimerState.Working;
 
@@ -56,6 +56,7 @@ public partial class App : System.Windows.Application
         _settings = _settingsStore.Load();
         _settings.LaunchAtLogin = _autostartService.IsEnabled();
         ApplyTheme(_settings.Theme);
+        _notificationSound = new NotificationSound();
         _timer = new BreakTimer(
             TimeSpan.FromMinutes(_settings.WorkMinutes),
             TimeSpan.FromSeconds(_settings.RestSeconds));
@@ -74,7 +75,8 @@ public partial class App : System.Windows.Application
             () => Dispatcher.Invoke(() => _timer.Reset()),
             duration => Dispatcher.Invoke(() => _timer.PauseReminders(duration)),
             () => Dispatcher.Invoke(ShowSettings),
-            () => Dispatcher.Invoke(ExitApplication));
+            () => Dispatcher.Invoke(ExitApplication),
+            IsDarkTheme(_settings.Theme));
 
         _timer.Changed += Timer_Changed;
         _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Background)
@@ -88,11 +90,15 @@ public partial class App : System.Windows.Application
     private void Timer_Changed(object? sender, TimerSnapshot snapshot)
     {
         if (_settings is null) return;
-        if (_settings.SoundEnabled &&
-            snapshot.State == TimerState.ReminderDue &&
+        if (_settings.SoundEnabled && snapshot.State == TimerState.ReminderDue &&
             _lastTimerState != TimerState.ReminderDue)
         {
-            SystemSounds.Asterisk.Play();
+            _notificationSound?.PlayReminder();
+        }
+        else if (_settings.SoundEnabled && snapshot.State == TimerState.Working &&
+                 _lastTimerState == TimerState.Resting)
+        {
+            _notificationSound?.PlayRestComplete();
         }
 
         _lastTimerState = snapshot.State;
@@ -121,6 +127,7 @@ public partial class App : System.Windows.Application
         _settingsStore?.Save(settings);
         _autostartService?.SetEnabled(settings.LaunchAtLogin);
         ApplyTheme(settings.Theme);
+        _trayService?.ApplyTheme(IsDarkTheme(settings.Theme));
         _reminderWindow?.ApplySettings(settings);
         _timer?.SetDurations(
             TimeSpan.FromMinutes(settings.WorkMinutes),
@@ -129,7 +136,7 @@ public partial class App : System.Windows.Application
 
     public void ApplyTheme(string theme)
     {
-        var useDarkTheme = theme == "dark" || (theme == "system" && SystemUsesDarkTheme());
+        var useDarkTheme = IsDarkTheme(theme);
         var palette = useDarkTheme
             ? new Dictionary<string, string>
             {
@@ -175,6 +182,9 @@ public partial class App : System.Windows.Application
         }
     }
 
+    public static bool IsDarkTheme(string theme)
+        => theme == "dark" || (theme == "system" && SystemUsesDarkTheme());
+
     private static bool SystemUsesDarkTheme()
     {
         try
@@ -196,6 +206,8 @@ public partial class App : System.Windows.Application
         _dispatcherTimer?.Stop();
         _trayService?.Dispose();
         _trayService = null;
+        _notificationSound?.Dispose();
+        _notificationSound = null;
         _reminderWindow?.Close();
         _settingsWindow?.Close();
         Shutdown();
@@ -204,6 +216,8 @@ public partial class App : System.Windows.Application
     protected override void OnExit(ExitEventArgs e)
     {
         _trayService?.Dispose();
+        _notificationSound?.Dispose();
+        _notificationSound = null;
         _activationRegistration?.Unregister(null);
         _activationEvent?.Dispose();
         if (_ownsMutex) _instanceMutex?.ReleaseMutex();

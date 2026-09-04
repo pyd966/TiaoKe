@@ -1,7 +1,7 @@
-using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using TiaoKe.App.Models;
+using TiaoKe.App.Services;
 
 namespace TiaoKe.App.Views;
 
@@ -10,6 +10,7 @@ public partial class SettingsWindow : Window
     private readonly AppSettings _settings;
     private readonly Action<AppSettings> _save;
     private readonly Action _restNow;
+    private readonly NotificationSound _notificationSound = new();
     private readonly string _originalTheme;
     private bool _isInitializing = true;
     private bool _isUpdatingPreset;
@@ -137,7 +138,7 @@ public partial class SettingsWindow : Window
         if (!_isInitializing) UpdateReminderPreview();
     }
 
-    private void SoundPreview_Click(object sender, RoutedEventArgs e) => SystemSounds.Asterisk.Play();
+    private void SoundPreview_Click(object sender, RoutedEventArgs e) => _notificationSound.PlayReminder();
 
     private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
@@ -148,6 +149,7 @@ public partial class SettingsWindow : Window
 
     private void SettingsWindow_Closed(object? sender, EventArgs e)
     {
+        _notificationSound.Dispose();
         if (!_saved && System.Windows.Application.Current is App app)
         {
             app.ApplyTheme(_originalTheme);

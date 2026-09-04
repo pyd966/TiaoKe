@@ -16,7 +16,11 @@
   <ItemGroup>
     <None Remove="Assets\tiaoke-icon.png" />
     <None Remove="Assets\tiaoke.ico" />
+    <None Remove="Assets\tiaoke-reminder.wav" />
+    <None Remove="Assets\tiaoke-rest-complete.wav" />
     <Resource Include="Assets\tiaoke-icon.png" />
     <Resource Include="Assets\tiaoke.ico" />
+    <Resource Include="Assets\tiaoke-reminder.wav" />
+    <Resource Include="Assets\tiaoke-rest-complete.wav" />
   </ItemGroup>
 </Project>
