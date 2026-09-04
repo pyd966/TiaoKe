@@ -53,6 +53,10 @@ public sealed class TrayService : IDisposable
             ShowImageMargin = false,
             DropShadowEnabled = true
         };
+        var renderer = new TiaoKeMenuRenderer(darkTheme);
+        _menu.Renderer = renderer;
+        ConfigureDropDown(_menu, renderer);
+        ConfigureDropDown(pauseReminderMenu.DropDown, renderer);
         _menu.Items.Add(_statusItem);
         _menu.Items.Add(new ToolStripSeparator { Margin = new Padding(7, 3, 7, 3) });
         AddMenuItem(_restNowItem);
@@ -89,15 +93,18 @@ public sealed class TrayService : IDisposable
 
     public void ApplyTheme(bool darkTheme)
     {
-        _menu.Renderer = new ToolStripProfessionalRenderer(new TiaoKeColorTable(darkTheme));
-        _menu.ForeColor = darkTheme ? Color.FromArgb(241, 244, 242) : Color.FromArgb(32, 37, 34);
+        var renderer = new TiaoKeMenuRenderer(darkTheme);
+        ApplyRenderer(_menu, renderer);
         _statusItem.ForeColor = darkTheme ? Color.FromArgb(170, 179, 174) : Color.FromArgb(104, 113, 108);
+        SetMenuColors(_menu, darkTheme ? Color.FromArgb(241, 244, 242) : Color.FromArgb(32, 37, 34),
+            darkTheme ? Color.FromArgb(170, 179, 174) : Color.FromArgb(104, 113, 108));
     }
 
     private void AddMenuItem(ToolStripMenuItem item)
     {
         item.Padding = new Padding(12, 7, 12, 7);
         item.Margin = new Padding(2, 1, 2, 1);
+        item.AutoSize = true;
         _menu.Items.Add(item);
     }
 
@@ -142,14 +149,83 @@ public sealed class TrayService : IDisposable
         return (Icon)SystemIcons.Application.Clone();
     }
 
-    private sealed class TiaoKeColorTable : ProfessionalColorTable
+    private static void ConfigureDropDown(ToolStripDropDown dropDown, TiaoKeMenuRenderer renderer)
+    {
+        dropDown.Renderer = renderer;
+        if (dropDown is ToolStripDropDownMenu menu)
+        {
+            menu.ShowImageMargin = false;
+            menu.ShowCheckMargin = false;
+        }
+        dropDown.Padding = new Padding(5, 6, 5, 6);
+        dropDown.DropShadowEnabled = true;
+        dropDown.VisibleChanged += (_, _) =>
+        {
+            if (dropDown.Visible) ApplyRoundedRegion(dropDown);
+        };
+        dropDown.Layout += (_, _) =>
+        {
+            if (dropDown.Visible) ApplyRoundedRegion(dropDown);
+        };
+    }
+
+    private static void ApplyRenderer(ToolStrip toolStrip, TiaoKeMenuRenderer renderer)
+    {
+        toolStrip.Renderer = renderer;
+        foreach (ToolStripItem item in toolStrip.Items)
+        {
+            if (item is ToolStripMenuItem menuItem && menuItem.HasDropDownItems)
+            {
+                ApplyRenderer(menuItem.DropDown, renderer);
+            }
+        }
+    }
+
+    private static void ApplyRoundedRegion(ToolStripDropDown dropDown)
+    {
+        if (dropDown.Width <= 0 || dropDown.Height <= 0) return;
+
+        using var path = RoundedRectangle(
+            new Rectangle(0, 0, dropDown.Width, dropDown.Height),
+            10);
+        var oldRegion = dropDown.Region;
+        dropDown.Region = new Region(path);
+        oldRegion?.Dispose();
+    }
+
+    private static GraphicsPath RoundedRectangle(Rectangle bounds, int radius)
+    {
+        var diameter = radius * 2;
+        var path = new GraphicsPath();
+        path.AddArc(bounds.Left, bounds.Top, diameter, diameter, 180, 90);
+        path.AddArc(bounds.Right - diameter, bounds.Top, diameter, diameter, 270, 90);
+        path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
+        path.AddArc(bounds.Left, bounds.Bottom - diameter, diameter, diameter, 90, 90);
+        path.CloseFigure();
+        return path;
+    }
+
+    private static void SetMenuColors(ToolStrip dropDown, Color foreground, Color mutedForeground)
+    {
+        foreach (ToolStripItem item in dropDown.Items)
+        {
+            if (item is ToolStripSeparator) continue;
+            item.ForeColor = item.Enabled ? foreground : mutedForeground;
+            if (item is ToolStripMenuItem menuItem && menuItem.HasDropDownItems)
+            {
+                SetMenuColors(menuItem.DropDown, foreground, mutedForeground);
+            }
+        }
+    }
+
+    private sealed class TiaoKeMenuRenderer : ToolStripProfessionalRenderer
     {
         private readonly bool _darkTheme;
 
-        public TiaoKeColorTable(bool darkTheme)
+        public TiaoKeMenuRenderer(bool darkTheme)
+            : base(new TiaoKeColorTable(darkTheme))
         {
             _darkTheme = darkTheme;
-            UseSystemColors = false;
         }
 
         private Color Background => _darkTheme
@@ -164,14 +240,86 @@ public sealed class TrayService : IDisposable
             ? Color.FromArgb(48, 54, 50)
             : Color.FromArgb(240, 243, 241);
 
-        public override Color ToolStripDropDownBackground => Background;
-        public override Color MenuBorder => Border;
-        public override Color MenuItemSelected => Hover;
-        public override Color MenuItemBorder => Hover;
-        public override Color ImageMarginGradientBegin => Background;
-        public override Color ImageMarginGradientMiddle => Background;
-        public override Color ImageMarginGradientEnd => Background;
-        public override Color SeparatorDark => Border;
-        public override Color SeparatorLight => Border;
+        protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
+        {
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            using var brush = new SolidBrush(Background);
+            using var path = RoundedRectangle(
+                new Rectangle(0, 0, e.ToolStrip.Width - 1, e.ToolStrip.Height - 1),
+                10);
+            e.Graphics.FillPath(brush, path);
+        }
+
+        protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+        {
+            if (!e.Item.Selected || !e.Item.Enabled) return;
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            var bounds = e.Item.Bounds;
+            bounds.Inflate(-1, -1);
+            using var brush = new SolidBrush(Hover);
+            using var path = RoundedRectangle(bounds, 6);
+            e.Graphics.FillPath(brush, path);
+        }
+
+        protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+        {
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            using var pen = new Pen(Border);
+            using var path = RoundedRectangle(
+                new Rectangle(0, 0, e.ToolStrip.Width - 1, e.ToolStrip.Height - 1),
+                10);
+            e.Graphics.DrawPath(pen, path);
+        }
+
+        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+        {
+            if (!e.Item.Enabled)
+            {
+                e.TextColor = _darkTheme
+                    ? Color.FromArgb(170, 179, 174)
+                    : Color.FromArgb(104, 113, 108);
+            }
+            else
+            {
+                e.TextColor = _darkTheme
+                    ? Color.FromArgb(241, 244, 242)
+                    : Color.FromArgb(32, 37, 34);
+            }
+
+            base.OnRenderItemText(e);
+        }
+    }
+
+    private sealed class TiaoKeColorTable : ProfessionalColorTable
+    {
+        private readonly Color _background;
+        private readonly Color _border;
+        private readonly Color _hover;
+
+        public TiaoKeColorTable(bool darkTheme)
+        {
+            _background = darkTheme
+                ? Color.FromArgb(34, 38, 36)
+                : Color.FromArgb(255, 255, 255);
+            _border = darkTheme
+                ? Color.FromArgb(64, 71, 66)
+                : Color.FromArgb(215, 221, 218);
+            _hover = darkTheme
+                ? Color.FromArgb(48, 54, 50)
+                : Color.FromArgb(240, 243, 241);
+
+            UseSystemColors = false;
+        }
+
+        public override Color ToolStripDropDownBackground => _background;
+        public override Color MenuBorder => _border;
+        public override Color MenuItemSelected => _hover;
+        public override Color MenuItemBorder => _hover;
+        public override Color ImageMarginGradientBegin => _background;
+        public override Color ImageMarginGradientMiddle => _background;
+        public override Color ImageMarginGradientEnd => _background;
+        public override Color SeparatorDark => _border;
+        public override Color SeparatorLight => _border;
     }
 }
