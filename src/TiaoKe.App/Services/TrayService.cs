@@ -255,8 +255,7 @@ public sealed class TrayService : IDisposable
             if (!e.Item.Selected || !e.Item.Enabled) return;
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            var bounds = e.Item.Bounds;
-            bounds.Inflate(-1, -1);
+            var bounds = new Rectangle(1, 1, e.Item.Width - 2, e.Item.Height - 2);
             using var brush = new SolidBrush(Hover);
             using var path = RoundedRectangle(bounds, 6);
             e.Graphics.FillPath(brush, path);
