@@ -9,6 +9,15 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <AssemblyName>TiaoKe</AssemblyName>
     <RootNamespace>TiaoKe.App</RootNamespace>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <InformationalVersion>0.1.0</InformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <AssemblyTitle>眺刻 TiaoKe</AssemblyTitle>
+    <Product>眺刻 TiaoKe</Product>
+    <Description>安静、不打断的 Windows 远眺休息提醒工具</Description>
+    <Authors>pyd966</Authors>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\tiaoke.ico</ApplicationIcon>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
