@@ -4,6 +4,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using TiaoKe.App.Core;
 using TiaoKe.App.Models;
+using TiaoKe.App.Services;
 using Forms = System.Windows.Forms;
 
 namespace TiaoKe.App.Views;
@@ -18,6 +19,8 @@ public partial class ReminderWindow : Window
     private string _reminderCorner = "bottomLeft";
     private string _displayTarget = "active";
     private bool _compactReminder;
+    private bool _pinnedToAllDesktops;
+    private int _pinAttempts;
 
     public ReminderWindow(
         Action startRest,
@@ -32,7 +35,11 @@ public partial class ReminderWindow : Window
         _reset = reset;
         _pauseReminders = pauseReminders;
         _showSettings = showSettings;
-        Loaded += (_, _) => PlaceOnScreen();
+        Loaded += (_, _) =>
+        {
+            PlaceOnScreen();
+            PinToAllDesktopsWhenReady();
+        };
         SizeChanged += (_, _) =>
         {
             if (IsVisible) PlaceOnScreen();
@@ -117,6 +124,38 @@ public partial class ReminderWindow : Window
     }
 
     private void OpenSettings_Click(object sender, RoutedEventArgs e) => _showSettings();
+
+    private void PinToAllDesktopsWhenReady()
+    {
+        if (_pinnedToAllDesktops || !IsVisible || _pinAttempts >= 5) return;
+
+        _pinAttempts++;
+
+        // The Shell registers a WPF window as an application view after Show
+        // returns. Running at application idle gives it a stable view handle.
+        Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+            new Action(() =>
+            {
+                if (_pinnedToAllDesktops || !IsVisible) return;
+                var handle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+                _pinnedToAllDesktops = VirtualDesktopService.TryPinToAllDesktops(handle);
+
+                if (!_pinnedToAllDesktops)
+                {
+                    var retryTimer = new System.Windows.Threading.DispatcherTimer
+                    {
+                        Interval = TimeSpan.FromMilliseconds(200)
+                    };
+                    retryTimer.Tick += (_, _) =>
+                    {
+                        retryTimer.Stop();
+                        PinToAllDesktopsWhenReady();
+                    };
+                    retryTimer.Start();
+                }
+            }));
+    }
 
     private void PlaceOnScreen()
     {

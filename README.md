@@ -6,9 +6,9 @@
 
 前往 [GitHub Releases](https://github.com/pyd966/TiaoKe/releases/latest) 下载最新版本：
 
-- `TiaoKe-v0.1.1-win-x64.exe`：单文件便携版，双击即可运行。
-- `TiaoKe-v0.1.1-win-x64.zip`：压缩包版本，解压后运行 `TiaoKe.exe`。
-- `TiaoKe-v0.1.1-SHA256.txt`：下载文件的 SHA-256 校验值。
+- `TiaoKe-v0.1.2-win-x64.exe`：单文件便携版，双击即可运行。
+- `TiaoKe-v0.1.2-win-x64.zip`：压缩包版本，解压后运行 `TiaoKe.exe`。
+- `TiaoKe-v0.1.2-SHA256.txt`：下载文件的 SHA-256 校验值。
 
 程序支持 Windows 10 22H2 及以上版本和 Windows 11（x64），已包含 .NET 8 运行时，不需要另行安装依赖。当前版本未进行商业代码签名，Windows 首次运行时可能显示 SmartScreen 提示。
 
@@ -19,6 +19,7 @@
 - 左键托盘图标打开设置。
 - 右键可以立即休息、重置计时或暂时关闭提醒。
 - 到达设定时间后，屏幕角落会出现不抢焦点的提醒卡片。
+- Windows 多桌面环境下，提醒卡片会固定显示在所有虚拟桌面。
 - 点击“开始远眺”后进入休息倒计时；结束时自动开始下一轮。
 
 ## 产品原则
@@ -57,7 +58,7 @@ $env:APPDATA="$PWD\.appdata"
 生成完整发布包：
 
 ```powershell
-.\tools\package-release.ps1 -Version 0.1.1
+.\tools\package-release.ps1 -Version 0.1.2
 ```
 
-产物会写入 `artifacts/release/v0.1.1`。
+产物会写入 `artifacts/release/v0.1.2`。
